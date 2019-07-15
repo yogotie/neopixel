@@ -1,3 +1,4 @@
+
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
@@ -7,10 +8,10 @@ architecture rtl_neopixel_top of neopixel_top is
   type T_SIG_BIT_STATE is (S_IDLE, S_NEXT_BIT, S_ONE, S_ZERO, S_DONE, S_RESET);
 
   signal sig_bit_s        : T_SIG_BIT_STATE;
-  
+
   signal sig_count        : unsigned(31 downto 0);
   signal sig_bit_cnt      : integer range 0 to s_axis_tdata'length;
-  signal sig_bit_idx      : integer range s_axis_tdata'range; 
+  signal sig_bit_idx      : integer range s_axis_tdata'range;
   signal sig_output       : std_logic;
 
 begin
@@ -36,7 +37,7 @@ begin
   begin
     if rising_edge(aclk) then
       if aresetn = '0' then
-        sig_bit_cnt <= 0; 
+        sig_bit_cnt <= 0;
         sig_bit_idx <= 0;
       else
         if sig_bit_cnt < s_axis_tdata'length and sig_bit_s = S_NEXT_BIT then
@@ -62,7 +63,7 @@ begin
               sig_bit_s <= S_NEXT_BIT;
             end if;
 
-          when S_NEXT_BIT => 
+          when S_NEXT_BIT =>
             if sig_bit_cnt >= s_axis_tdata'length then
               sig_bit_s <= S_DONE;
             elsif s_axis_tdata(sig_bit_idx) = '1' then
@@ -70,17 +71,17 @@ begin
             else
               sig_bit_s <= S_ZERO;
             end if;
-            
-          when S_ONE => 
+
+          when S_ONE =>
             sig_bit_s   <= S_ONE when sig_count < (G_T1H_NS + G_T1L_NS) else S_IDLE;
             sig_output  <=   '1' when sig_count < G_T1H_NS              else '0';
 
-          when S_ZERO => 
+          when S_ZERO =>
             sig_bit_s   <= S_ZERO when sig_count < (G_T0H_NS + G_T0L_NS) else S_IDLE;
             sig_output  <=    '1' when sig_count < G_T0H_NS              else '0';
 
-          when S_DONE => 
-            sig_bit_s   <= S_RESET when s_axis_tlast = '1' else S_IDLE; 
+          when S_DONE =>
+            sig_bit_s   <= S_RESET when s_axis_tlast = '1' else S_IDLE;
 
           when S_RESET =>
             sig_bit_s   <= S_RESET when sig_count < G_TRESET_NS else S_IDLE;
@@ -91,3 +92,4 @@ begin
   end process;
 
 end rtl_neopixel_top;
+

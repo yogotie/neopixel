@@ -20,17 +20,15 @@ cmake_minimum_required(VERSION 2.8)
 
 # Include macros
 include(cmake/macros.cmake)
-include(cmake/vhdl_test_macros.cmake)
 
 # Enable testing
 enable_testing()
-
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 # Parse all sources
 add_subdirectory(vhdl/)
-
 add_custom_target(index ALL COMMAND ghdl -i --std=08 --workdir=${CMAKE_CURRENT_BINARY_DIR} ${VHDL_SOURCES})
 
 # Add compile test target
 set(CTEST_OUTPUT_ON_FAILURE 1)
+

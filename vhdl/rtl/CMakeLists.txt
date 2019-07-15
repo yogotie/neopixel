@@ -1,4 +1,5 @@
 
 # Add sources
-add_sources_directory(ent/ arc/)
+vhdl_add_sources(neopixel_top_ent.vhd)
+vhdl_add_sources(neopixel_top_arc.vhd)
 

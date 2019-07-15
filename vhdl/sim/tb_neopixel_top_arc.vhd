@@ -4,8 +4,6 @@ library ieee;
 
 architecture behav_neopixel_top of tb_neopixel_top is
 
-  signal test_done       : boolean := false;
-
   signal aclk            : std_logic := '0';
   signal aresetn         : std_logic;
   signal s_axis_tdata    : std_logic_vector(23 downto 0);
@@ -39,7 +37,10 @@ begin
   begin
     wait for 5 ns;
     aclk <= not aclk;
-    if test_done then wait; end if;
+    if now >= 1 us then
+      assert false report "end of test" severity note;
+      wait;
+    end if;
   end process;
 
   aresetn <= '0', '1' after 100 ns;
@@ -50,9 +51,6 @@ begin
       wait for 1 ns;
       assert aresetn = '1' report "reset is not 1" severity error;
     end loop;
-
-    assert false report "end of test" severity note;
-    test_done <= true;
     wait;
   end process;
 
