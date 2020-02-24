@@ -1,1 +1,3 @@
 build/*
+.hdl_checker.config
+.hdl_checker/cache.json
