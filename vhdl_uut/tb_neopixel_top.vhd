@@ -1,9 +1,13 @@
+
 library ieee;
-  use ieee.std_logic_1164.all;
-  use ieee.numeric_std.all;
+  context ieee.ieee_std_context;
+
+library vunit_lib;
+  context vunit_lib.vunit_context;
 
 entity tb_neopixel_top is
   generic (
+    runner_cfg        : string;
     G_CLOCK_PERIOD_NS : integer := 10;
     G_T0H_NS          : integer := 300;
     G_T0L_NS          : integer := 900;
@@ -44,25 +48,18 @@ begin
       m_neopixel      => m_neopixel
     );
 
-  process
-  begin
-    wait for 5 ns;
-    aclk <= not aclk;
-    if now >= 1 us then
-      assert false report "end of test" severity note;
-      wait;
-    end if;
-  end process;
-
+  aclk    <= not aclk after 5 ns;
   aresetn <= '0', '1' after 100 ns;
 
-  process
+  main : process
   begin
-    for i in 0 to 3 loop
-      wait for 1 ns;
-      assert aresetn = '1' report "reset is not 1" severity error;
-    end loop;
+    test_runner_setup(runner, runner_cfg);
+
+    wait for 10 us;
+
+    test_runner_cleanup(runner);
     wait;
   end process;
 
 end behav_neopixel_top;
+

@@ -1,3 +1,2 @@
-build/*
-.hdl_checker.config
-.hdl_checker/cache.json
+.DS_Store
+vhdl_build/vunit_out
